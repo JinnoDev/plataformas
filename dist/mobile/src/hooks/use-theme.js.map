@@ -1,0 +1,1 @@
+{"version":3,"file":"use-theme.js","sourceRoot":"","sources":["../../../../mobile/src/hooks/use-theme.ts"],"names":[],"mappings":";;AAQA,4BAKC;AARD,6CAA2C;AAC3C,+DAA0D;AAE1D,SAAgB,QAAQ;IACtB,MAAM,MAAM,GAAG,IAAA,iCAAc,GAAE,CAAC;IAChC,MAAM,KAAK,GAAG,MAAM,KAAK,aAAa,CAAC,CAAC,CAAC,OAAO,CAAC,CAAC,CAAC,MAAM,CAAC;IAE1D,OAAO,cAAM,CAAC,KAAK,CAAC,CAAC;AACvB,CAAC"}
