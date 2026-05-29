@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import {
-    ActivityIndicator, KeyboardAvoidingView, Platform,
-    StyleSheet,
-    Text, TextInput, TouchableOpacity,
-    View
+  View, Text, TextInput, TouchableOpacity,
+  StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform
 } from 'react-native';
-import Toast from 'react-native-toast-message';
+import { useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
+import Toast from 'react-native-toast-message';
 
-export default function LoginScreen({ navigation }: any) {
+export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const router = useRouter();
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
@@ -33,51 +33,51 @@ export default function LoginScreen({ navigation }: any) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <View style={styles.inner}>
+      <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <View style={styles.inner}>
 
-        <Text style={styles.title}>Social Connect</Text>
-        <Text style={styles.subtitle}>Inicia sesión para continuar</Text>
+          <Text style={styles.title}>Social Connect</Text>
+          <Text style={styles.subtitle}>Inicia sesión para continuar</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Correo electrónico"
-          placeholderTextColor="#666"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
+          <TextInput
+              style={styles.input}
+              placeholder="Correo electrónico"
+              placeholderTextColor="#666"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+          />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Contraseña"
-          placeholderTextColor="#666"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+          <TextInput
+              style={styles.input}
+              placeholder="Contraseña"
+              placeholderTextColor="#666"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+          />
 
-        <TouchableOpacity
-          style={[styles.button, loading && styles.buttonDisabled]}
-          onPress={handleLogin}
-          disabled={loading}
-        >
-          {loading
-            ? <ActivityIndicator color="#000" />
-            : <Text style={styles.buttonText}>Iniciar sesión</Text>
-          }
-        </TouchableOpacity>
+          <TouchableOpacity
+              style={[styles.button, loading && styles.buttonDisabled]}
+              onPress={handleLogin}
+              disabled={loading}
+          >
+            {loading
+                ? <ActivityIndicator color="#000" />
+                : <Text style={styles.buttonText}>Iniciar sesión</Text>
+            }
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.link}>¿No tienes cuenta? <Text style={styles.linkBold}>Regístrate</Text></Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/register')}>
+            <Text style={styles.link}>¿No tienes cuenta? <Text style={styles.linkBold}>Regístrate</Text></Text>
+          </TouchableOpacity>
 
-      </View>
-    </KeyboardAvoidingView>
+        </View>
+      </KeyboardAvoidingView>
   );
 }
 

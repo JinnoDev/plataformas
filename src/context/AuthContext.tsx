@@ -1,6 +1,23 @@
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { authApi, usersApi } from '../services/api';
+
+const storage = {
+  getItem: async (key: string) => {
+    if (Platform.OS === 'web') return localStorage.getItem(key);
+    return AsyncStorage.getItem(key);
+  },
+  setItem: async (key: string, value: string) => {
+    if (Platform.OS === 'web') return localStorage.setItem(key, value);
+    return AsyncStorage.setItem(key, value);
+  },
+  removeItem: async (key: string) => {
+    if (Platform.OS === 'web') return localStorage.removeItem(key);
+    return AsyncStorage.removeItem(key);
+  },
+};
+
 interface User {
   _id: string;
   email: string;
@@ -33,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return res.data;
     } catch (err: any) {
       if (err?.response?.status === 401) {
-        await AsyncStorage.removeItem('accessToken');
+        await storage.removeItem('accessToken');
       }
       return null;
     }
@@ -46,43 +63,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const init = async () => {
-      const token = await AsyncStorage.getItem('accessToken');
-      if (!token) { setLoading(false); return; }
-      const me = await fetchMe();
-      setUser(me);
-      setLoading(false);
+      try {
+        const token = await storage.getItem('accessToken');
+        if (!token) { setLoading(false); return; }
+        const me = await Promise.race([
+          fetchMe(),
+          new Promise<null>((resolve) => setTimeout(() => resolve(null), 5000))
+        ]);
+        setUser(me);
+      } catch {
+        // ignore
+      } finally {
+        setLoading(false);
+      }
     };
     init();
   }, []);
 
   const login = async (email: string, password: string) => {
-    await AsyncStorage.removeItem('accessToken');
+    await storage.removeItem('accessToken');
     setUser(null);
     const res = await authApi.login({ email, password });
-    await AsyncStorage.setItem('accessToken', res.data.accessToken);
+    await storage.setItem('accessToken', res.data.accessToken);
     const me = await fetchMe();
     setUser(me);
   };
 
   const register = async (email: string, username: string, password: string) => {
-    await AsyncStorage.removeItem('accessToken');
+    await storage.removeItem('accessToken');
     setUser(null);
     const res = await authApi.register({ email, username, password });
-    await AsyncStorage.setItem('accessToken', res.data.accessToken);
+    await storage.setItem('accessToken', res.data.accessToken);
     const me = await fetchMe();
     setUser(me);
   };
 
   const logout = async () => {
     try { await authApi.logout(); } catch {}
-    await AsyncStorage.removeItem('accessToken');
+    await storage.removeItem('accessToken');
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
+        {children}
+      </AuthContext.Provider>
   );
 }
 

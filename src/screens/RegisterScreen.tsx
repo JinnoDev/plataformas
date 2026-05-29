@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import {
-    ActivityIndicator, KeyboardAvoidingView, Platform,
-    StyleSheet,
-    Text, TextInput, TouchableOpacity,
-    View
+  View, Text, TextInput, TouchableOpacity,
+  StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform
 } from 'react-native';
-import Toast from 'react-native-toast-message';
+import { useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
+import Toast from 'react-native-toast-message';
 
-export default function RegisterScreen({ navigation }: any) {
+export default function RegisterScreen() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
+  const router = useRouter();
 
   const handleRegister = async () => {
     if (!username.trim() || !email.trim() || !password.trim()) {
@@ -38,60 +38,60 @@ export default function RegisterScreen({ navigation }: any) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <View style={styles.inner}>
+      <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <View style={styles.inner}>
 
-        <Text style={styles.title}>Social Connect</Text>
-        <Text style={styles.subtitle}>Crea tu cuenta</Text>
+          <Text style={styles.title}>Social Connect</Text>
+          <Text style={styles.subtitle}>Crea tu cuenta</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Nombre de usuario"
-          placeholderTextColor="#666"
-          value={username}
-          onChangeText={setUsername}
-          autoCapitalize="none"
-        />
+          <TextInput
+              style={styles.input}
+              placeholder="Nombre de usuario"
+              placeholderTextColor="#666"
+              value={username}
+              onChangeText={setUsername}
+              autoCapitalize="none"
+          />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Correo electrónico"
-          placeholderTextColor="#666"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
+          <TextInput
+              style={styles.input}
+              placeholder="Correo electrónico"
+              placeholderTextColor="#666"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+          />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Contraseña"
-          placeholderTextColor="#666"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+          <TextInput
+              style={styles.input}
+              placeholder="Contraseña"
+              placeholderTextColor="#666"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+          />
 
-        <TouchableOpacity
-          style={[styles.button, loading && styles.buttonDisabled]}
-          onPress={handleRegister}
-          disabled={loading}
-        >
-          {loading
-            ? <ActivityIndicator color="#000" />
-            : <Text style={styles.buttonText}>Crear cuenta</Text>
-          }
-        </TouchableOpacity>
+          <TouchableOpacity
+              style={[styles.button, loading && styles.buttonDisabled]}
+              onPress={handleRegister}
+              disabled={loading}
+          >
+            {loading
+                ? <ActivityIndicator color="#000" />
+                : <Text style={styles.buttonText}>Crear cuenta</Text>
+            }
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.link}>¿Ya tienes cuenta? <Text style={styles.linkBold}>Inicia sesión</Text></Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/login')}>
+            <Text style={styles.link}>¿Ya tienes cuenta? <Text style={styles.linkBold}>Inicia sesión</Text></Text>
+          </TouchableOpacity>
 
-      </View>
-    </KeyboardAvoidingView>
+        </View>
+      </KeyboardAvoidingView>
   );
 }
 
