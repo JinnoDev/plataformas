@@ -1,5 +1,5 @@
-import { View } from 'react-native';
+import ProfileScreen from '../../screens/ProfileScreen';
 
 export default function Profile() {
-    return <View style={{ flex: 1, backgroundColor: '#0a0a0a' }} />;
+    return <ProfileScreen />;
 }
