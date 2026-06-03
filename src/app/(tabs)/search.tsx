@@ -1,5 +1,5 @@
-import { View } from 'react-native';
+import SearchScreen from '../../screens/SearchScreen';
 
 export default function Search() {
-    return <View style={{ flex: 1, backgroundColor: '#0a0a0a' }} />;
+    return <SearchScreen />;
 }
