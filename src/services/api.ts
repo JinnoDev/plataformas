@@ -1,5 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PostData, User } from '@/types';
 
 const API_URL = 'http://localhost:3000/api/v1';
 
@@ -27,16 +28,7 @@ export const authApi = {
     logout: () => api.post('/auth/logout'),
 };
 
-export const usersApi = {
-    getMe: () => api.get('/users/me'),
-    updateMe: (data: { name?: string; bio?: string }) => api.patch('/users/me', data),
-    getProfile: (userId: string) => api.get(`/users/${userId}`),
-    follow: (userId: string) => api.post(`/users/${userId}/follow`),
-    unfollow: (userId: string) => api.delete(`/users/${userId}/follow`),
-    getFollowers: (userId: string, page = 1) => api.get(`/users/${userId}/followers?page=${page}&limit=50`),
-    getFollowing: (userId: string, page = 1) => api.get(`/users/${userId}/following?page=${page}&limit=50`),
-    getSaved: (page = 1) => api.get(`/users/me/saved?page=${page}`),
-};
+
 
 export const postsApi = {
     getFeed: (page = 1, limit = 10) => api.get(`/posts/feed?page=${page}&limit=${limit}`),
@@ -67,3 +59,16 @@ export const uploadAvatar = (uri: string) => {
     fd.append('avatar', { uri, name: 'avatar.jpg', type: 'image/jpeg' } as any);
     return api.post('/users/me/avatar', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
 };
+export const usersApi = {
+
+    getMePosts: () => api.get<PostData[]>('/users/me/posts'),
+    updateProfile: (data: { name?: string; bio?: string }) => api.patch<User>('/users/me', data),
+    getUserProfile: (id: string) => api.get<User>(`/users/${id}`),
+    getUserPosts: (id: string) => api.get<PostData[]>(`/users/${id}/posts`),
+    followUser: (id: string) => api.post(`/users/${id}/follow`),
+    unfollowUser: (id: string) => api.delete(`/users/${id}/follow`),
+    getFollowers: (id: string) => api.get<User[]>(`/users/${id}/followers`),
+    getFollowing: (id: string) => api.get<User[]>(`/users/${id}/following`),
+    getSavedPosts: () => api.get<PostData[]>('/users/me/saved')
+};
+
